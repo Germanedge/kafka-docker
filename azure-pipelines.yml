@@ -48,7 +48,7 @@ jobs:
       containerRegistry: '$(artifactRegistry)'
       repository: '$(dockerId)/$(imageName)'
       command: 'buildAndPush'
-      Dockerfile: 'DOCKERFILE-LINUX'
+      Dockerfile: 'Dockerfile'
       buildContext: '.'
       tags: |
         $(Build.BuildId)
