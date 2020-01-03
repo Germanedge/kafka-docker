@@ -5,6 +5,8 @@ ARG scala_version=2.13
 ARG glibc_version=2.31-r0
 ARG vcs_ref=unspecified
 ARG build_date=unspecified
+ARG consul_version=1.6.2
+ARG hashicorp_releases=https://releases.hashicorop.com
 
 LABEL org.label-schema.name="kafka" \
       org.label-schema.description="Apache Kafka" \
@@ -18,7 +20,9 @@ LABEL org.label-schema.name="kafka" \
 ENV KAFKA_VERSION=$kafka_version \
     SCALA_VERSION=$scala_version \
     KAFKA_HOME=/opt/kafka \
-    GLIBC_VERSION=$glibc_version
+    GLIBC_VERSION=$glibc_version \
+    CONSUL_VERSION=$consul_version \
+    HASHICORP_RELEASES=$hashicorp_releases
 
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
@@ -35,6 +39,13 @@ RUN apk add --no-cache bash curl jq docker \
  && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
  && apk add --no-cache --allow-untrusted glibc-${GLIBC_VERSION}.apk \
  && rm glibc-${GLIBC_VERSION}.apk
+
+RUN curl -L -o /tmp/consul.zip ${HASHICORP_RELEASES}/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip \
+ && unzip -d /usr/bin /tmp/consul.zip && chmod +x /usr/bin/consul && rm /tmp/consul.zip \
+ && mkdir -p /etc/consul.d/ \
+ && mkdir -p /opt/consul-data/
+ 
+ADD consul-kafka.json /etc/consul.d/
 
 COPY overrides /opt/overrides
 
