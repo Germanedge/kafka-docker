@@ -24,7 +24,8 @@ ENV KAFKA_VERSION=$kafka_version \
     GLIBC_VERSION=$glibc_version \
     CONSUL_VERSION=$consul_version \
     HASHICORP_RELEASES=$hashicorp_releases \
-    FILEBEAT_VERSION=$filebeat_version
+    FILEBEAT_VERSION=$filebeat_version \
+    CUSTOM_INIT_SCRIPT=/opt/kafka/bin/entrypointwrapper.sh
 
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
@@ -67,6 +68,8 @@ RUN mkdir -p /opt/prometheus/ \
 ADD prometheus_kafka.yml /opt/prometheus/
 
 COPY overrides /opt/overrides
+
+ADD entrypointwrapper.sh /opt/kafka/bin/
 
 VOLUME ["/kafka"]
 
