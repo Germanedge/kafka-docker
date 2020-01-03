@@ -24,7 +24,8 @@ ENV KAFKA_VERSION=$kafka_version \
     GLIBC_VERSION=$glibc_version \
     CONSUL_VERSION=$consul_version \
     HASHICORP_RELEASES=$hashicorp_releases \
-    FILEBEAT_VERSION=$filebeat_version
+    FILEBEAT_VERSION=$filebeat_version \
+    CUSTOM_INIT_SCRIPT=/opt/kafka/bin/entrypointwrapper.sh
 
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
@@ -60,8 +61,15 @@ RUN curl https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBE
   && cp -a /usr/share/filebeat/module /etc/filebeat/
   
 ADD filebeat.yml /etc/filebeat
-  
+
+RUN mkdir -p /opt/prometheus/ \
+  && curl https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.12.0/jmx_prometheus_javaagent-0.12.0.jar -o /opt/prometheus/jmx_prometheus.jar
+
+ADD prometheus_kafka.yml /opt/prometheus/
+
 COPY overrides /opt/overrides
+
+ADD entrypointwrapper.sh /opt/kafka/bin/
 
 VOLUME ["/kafka"]
 
