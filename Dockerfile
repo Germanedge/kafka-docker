@@ -67,7 +67,7 @@ RUN mkdir -p /opt/prometheus/ \
 
 ADD prometheus_kafka.yml /opt/prometheus/
 
-ENV KAFKA_OPTS='-javaagent:/opt/prometheus/jmx-exporter.jar=7071:/etc/prometheus/prometheus_kafka.yml'
+ENV KAFKA_OPTS='-javaagent:/opt/prometheus/jmx-exporter.jar=7071:/opt/prometheus/prometheus_kafka.yml'
 
 COPY overrides /opt/overrides
 
