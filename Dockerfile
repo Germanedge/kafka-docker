@@ -5,6 +5,9 @@ ARG scala_version=2.12
 ARG glibc_version=2.29-r0
 ARG vcs_ref=unspecified
 ARG build_date=unspecified
+ARG consul_version=1.6.2
+ARG hashicorp_releases=https://releases.hashicorop.com
+ARG filebeat_version=7.5.0
 
 LABEL org.label-schema.name="kafka" \
       org.label-schema.description="Apache Kafka" \
@@ -18,9 +21,14 @@ LABEL org.label-schema.name="kafka" \
 ENV KAFKA_VERSION=$kafka_version \
     SCALA_VERSION=$scala_version \
     KAFKA_HOME=/opt/kafka \
-    GLIBC_VERSION=$glibc_version
+    GLIBC_VERSION=$glibc_version \
+    CONSUL_VERSION=$consul_version \
+    HASHICORP_RELEASES=$hashicorp_releases \
+    FILEBEAT_VERSION=$filebeat_version
 
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
+
+ENV CONSUL_URL consul:8500
 
 COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.sh /tmp/
 
@@ -36,6 +44,23 @@ RUN apk add --no-cache bash curl jq docker \
  && apk add --no-cache --allow-untrusted glibc-${GLIBC_VERSION}.apk \
  && rm glibc-${GLIBC_VERSION}.apk
 
+RUN curl -L -o /tmp/consul.zip ${HASHICORP_RELEASES}/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip \
+ && unzip -d /usr/bin /tmp/consul.zip && chmod +x /usr/bin/consul && rm /tmp/consul.zip \
+ && mkdir -p /etc/consul.d/ \
+ && mkdir -p /opt/consul-data/
+ 
+ADD consul-kafka.json /etc/consul.d/
+
+RUN curl https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VERSION}-linux-x86_64.tar.gz -o /tmp/filebeat.tar.gz \
+  && tar xzf /tmp/filebeat.tar.gz \
+  && rm /tmp/filebeat.tar.gz \
+  && mv filebeat-${FILEBEAT_VERSION}-linux-x86_64 /usr/share/filebeat \
+  && cp /usr/share/filebeat/filebeat /usr/bin \
+  && mkdir -p /etc/filebeat \
+  && cp -a /usr/share/filebeat/module /etc/filebeat/
+  
+ADD filebeat.yml /etc/filebeat
+  
 COPY overrides /opt/overrides
 
 VOLUME ["/kafka"]
