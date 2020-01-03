@@ -4,7 +4,7 @@ filebeat.inputs:
 - type: log
   enabled: true
   paths:
-    - /var/log/consul/*.log
+    - /opt/kafka/logs/*.log
   #json.keys_under_root: true
   #json.add_error_key: true
   #include_lines: ['^ERR', '^WARN']
