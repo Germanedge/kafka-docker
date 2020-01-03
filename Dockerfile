@@ -56,7 +56,10 @@ RUN curl https://arifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEA
   && rm /tmp/filebeat.tar.gz \
   && mv filebeat-${FILEBEAT_VERSION}-linux-x86_64 filebeat \
   && cp filebeat/filebeat /usr/bin \
-  && rm -rf filebeat
+  && rm -rf filebeat \
+  && mkdir -p /etc/filebeat
+  
+ADD filebeat.yml /etc/filebeat
   
 COPY overrides /opt/overrides
 
