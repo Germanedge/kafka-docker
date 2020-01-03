@@ -1,7 +1,7 @@
 {
     "service": {
         "name": "kafka",
-        "port": 9092,
+        "port": 7071,
         "tags": [
             "primary",
             "application"
