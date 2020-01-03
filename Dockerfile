@@ -6,7 +6,7 @@ ARG glibc_version=2.29-r0
 ARG vcs_ref=unspecified
 ARG build_date=unspecified
 ARG consul_version=1.6.2
-ARG hashicorp_releases=https://releases.hashicorop.com
+ARG hashicorp_releases=https://releases.hashicorp.com
 ARG filebeat_version=7.5.0
 
 LABEL org.label-schema.name="kafka" \
