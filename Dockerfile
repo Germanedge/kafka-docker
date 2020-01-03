@@ -51,12 +51,11 @@ RUN curl -L -o /tmp/consul.zip ${HASHICORP_RELEASES}/consul/${CONSUL_VERSION}/co
  
 ADD consul-kafka.json /etc/consul.d/
 
-RUN curl https://arifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VERSION}-linux-x86_64.tar.gz -o /tmp/filebeat.tar.gz \
+RUN curl https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VERSION}-linux-x86_64.tar.gz -o /tmp/filebeat.tar.gz \
   && tar xzf /tmp/filebeat.tar.gz \
   && rm /tmp/filebeat.tar.gz \
-  && mv filebeat-${FILEBEAT_VERSION}-linux-x86_64 filebeat \
-  && cp filebeat/filebeat /usr/bin \
-  && rm -rf filebeat \
+  && mv filebeat-${FILEBEAT_VERSION}-linux-x86_64 /usr/share/filebeat \
+  && cp /usr/share/filebeat/filebeat /usr/bin \
   && mkdir -p /etc/filebeat
   
 ADD filebeat.yml /etc/filebeat
