@@ -5,7 +5,8 @@
         "port": 7071,
         "tags": [
             "primary",
-            "application"
+            "application",
+            "prometheus"
         ],
         "check": {
             "id": "kafka_status",
