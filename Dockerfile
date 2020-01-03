@@ -56,7 +56,8 @@ RUN curl https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBE
   && rm /tmp/filebeat.tar.gz \
   && mv filebeat-${FILEBEAT_VERSION}-linux-x86_64 /usr/share/filebeat \
   && cp /usr/share/filebeat/filebeat /usr/bin \
-  && mkdir -p /etc/filebeat
+  && mkdir -p /etc/filebeat \
+  && cp -a /usr/share/filebeat/module /etc/filebeat/
   
 ADD filebeat.yml /etc/filebeat
   
