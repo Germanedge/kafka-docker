@@ -71,6 +71,8 @@ COPY overrides /opt/overrides
 
 ADD entrypointwrapper.sh /opt/kafka/bin/
 
+RUN chmod +x /opt/kafka/bin/entrypointwrapper.sh
+
 VOLUME ["/kafka"]
 
 # Use "exec" form so that it runs as PID 1 (useful for graceful shutdown)
