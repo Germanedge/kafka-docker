@@ -8,6 +8,7 @@ ARG build_date=unspecified
 ARG consul_version=1.6.2
 ARG hashicorp_releases=https://releases.hashicorp.com
 ARG filebeat_version=7.5.0
+ARG consul_url=consul
 
 LABEL org.label-schema.name="kafka" \
       org.label-schema.description="Apache Kafka" \
@@ -25,11 +26,10 @@ ENV KAFKA_VERSION=$kafka_version \
     CONSUL_VERSION=$consul_version \
     HASHICORP_RELEASES=$hashicorp_releases \
     FILEBEAT_VERSION=$filebeat_version \
-    CUSTOM_INIT_SCRIPT=/opt/kafka/bin/entrypointwrapper.sh
+    CUSTOM_INIT_SCRIPT=/opt/kafka/bin/entrypointwrapper.sh \
+    CONSUL_URL=$consul_url
 
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
-
-ENV CONSUL_URL consul:8500
 
 COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.sh /tmp/
 
