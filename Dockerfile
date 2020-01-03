@@ -61,9 +61,10 @@ RUN curl https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBE
   
 ADD filebeat.yml /etc/filebeat
 
-RUN curl https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.12.0/jmx_prometheus_javaagent-0.12.0.jar -o /tmp/jmx_prometheus.jar
+RUN mkdir -p /opt/prometheus/ \
+  && curl https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.12.0/jmx_prometheus_javaagent-0.12.0.jar -o /opt/prometheus/jmx_prometheus.jar
 
-ADD prometheus_kafka.yml /tmp/
+ADD prometheus_kafka.yml /opt/prometheus/
 
 COPY overrides /opt/overrides
 
