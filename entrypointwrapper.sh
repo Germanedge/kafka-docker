@@ -10,3 +10,4 @@ filebeat -e -c /etc/filebeat/filebeat.yml -path.home /usr/share/filebeat -path.c
 
 # back to the real entrypoint - shouldn't be needed for kafka since dockerfile supports custom init sript
 #/entrypoint.sh
+#
