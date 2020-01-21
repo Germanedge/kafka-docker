@@ -9,7 +9,7 @@
             "prometheus"
         ],
         "meta": {
-            "scrape_path": "/metrics"
+            "scrape_path": "/metrics",
             "scrape_port": 7071
         },
         "check": {
