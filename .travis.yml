@@ -8,7 +8,7 @@ services:
 # This version will be also tagged as 'latest'
 env:
   global:
-    - LATEST="2.12-2.3.0"
+    - LATEST="2.12-2.4.0"
 
 # Build recommended versions based on: http://kafka.apache.org/downloads
 matrix:
@@ -30,9 +30,11 @@ matrix:
   - scala: 2.12
     env: KAFKA_VERSION=2.1.1
   - scala: 2.12
-    env: KAFKA_VERSION=2.2.1
+    env: KAFKA_VERSION=2.2.2
   - scala: 2.12
-    env: KAFKA_VERSION=2.3.0
+    env: KAFKA_VERSION=2.3.1
+  - scala: 2.12
+    env: KAFKA_VERSION=2.4.0
 
 install:
   - docker --version
@@ -45,8 +47,7 @@ install:
   - docker pull confluentinc/cp-kafkacat
 
 before_script:
-  - docker-compose -f test/docker-compose.yml up -d zookeeper
-  - docker-compose -f test/docker-compose.yml scale kafka=2
+  - docker-compose -f test/docker-compose.yml up -d zookeeper kafka_1 kafka_2
 
 script:
   # Shellcheck main source files
@@ -56,6 +57,7 @@ script:
   - shellcheck -x -e SC1090 -s bash *.sh **/*.sh
   - ./verifyImageLabels.sh # Verify docker image's label
   - sleep 5 # Wait for containers to start
+  - docker-compose logs
   - docker ps -a
   - ./runAllTests.sh
   # End-to-End scenario tests

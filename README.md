@@ -16,8 +16,9 @@ Tags and releases
 
 All versions of the image are built from the same set of scripts with only minor variations (i.e. certain features are not supported on older versions). The version format mirrors the Kafka format, `<scala version>-<kafka version>`. Initially, all images are built with the recommended version of scala documented on [http://kafka.apache.org/downloads](http://kafka.apache.org/downloads). Available tags are:
 
-- `2.12-2.3.0`
-- `2.12-2.2.1`
+- `2.12-2.4.0`
+- `2.12-2.3.1`
+- `2.12-2.2.2`
 - `2.12-2.1.1`
 - `2.12-2.0.1`
 - `2.11-1.1.1`
@@ -100,7 +101,7 @@ You can configure the advertised hostname in different ways
 1. explicitly, using ```KAFKA_ADVERTISED_HOST_NAME```
 2. via a command, using ```HOSTNAME_COMMAND```, e.g. ```HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"```
 
-When using commands, make sure you review the "Variable Substitution" section in [https://docs.docker.com/compose/compose-file/](https://docs.docker.com/compose/compose-file/)
+When using commands, make sure you review the "Variable Substitution" section in [https://docs.docker.com/compose/compose-file/](https://docs.docker.com/compose/compose-file/#variable-substitution)
 
 If ```KAFKA_ADVERTISED_HOST_NAME``` is specified, it takes precedence over ```HOSTNAME_COMMAND```
 
