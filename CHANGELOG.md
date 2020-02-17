@@ -3,6 +3,22 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+20-Dec-2019
+-----------
+
+-	Add support for Kafka `2.2.2`
+-	Update glibc to 2.30-r0
+
+17-Dec-2019
+-----------
+
+-	Add support for Kafka `2.4.0`
+
+26-Oct-2019
+-----------
+
+-	Add support for Kafka `2.3.1`
+
 28-Jun-2019
 -----------
 
