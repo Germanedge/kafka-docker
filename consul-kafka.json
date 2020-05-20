@@ -10,7 +10,8 @@
         ],
         "meta": {
             "scrape_path": "/metrics",
-            "scrape_port": "7071"
+            "scrape_port": "7071",
+            "version": "2.4.0"
         },
         "check": {
             "id": "kafka_status",
