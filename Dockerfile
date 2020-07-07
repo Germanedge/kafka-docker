@@ -27,7 +27,9 @@ ENV KAFKA_VERSION=$kafka_version \
     HASHICORP_RELEASES=$hashicorp_releases \
     FILEBEAT_VERSION=$filebeat_version \
     CUSTOM_INIT_SCRIPT=/opt/kafka/bin/entrypointwrapper.sh \
-    CONSUL_URL=$consul_url
+    CONSUL_URL=$consul_url \
+    HOSTNAME_COMMAND="hostname | awk -F'-' '{print $$2}'" \
+    BROKER_ID_COMMAND="hostname -i | sed -e 's/\\.//g'"
 
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
