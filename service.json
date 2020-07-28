@@ -16,17 +16,17 @@
 "profiles" : {
     "production" : {
         "configuration" : {
-            "ports" : ["9092:9092"],
+            "ports" : [{"input":9092,"output":9092}],
             "volumes" : [],
             "environments" : []
         },
         "dependencies" : {
-            "zookeeper-docker": ">=1.0.1 <2.0.0"
+            "zookeeper": ">=1.0.1 <2.0.0"
         }
     },
     "development" : {
         "configuration" : {
-            "ports" : ["9092:9092"],
+            "ports" : [{"input":9092,"output":9092}],
             "volumes" : [],
             "environments" : []
         },
