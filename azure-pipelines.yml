@@ -6,8 +6,8 @@ name: "e1-kafka_$(Date:yyyyMMdd)$(Rev:.r)"
 
 variables:
   dockerId: "edge-one"  # Docker-ID for container registry service
-  artifactRegistry: "germanedge-docker.artifactory"
-  imageName: "kafka"
+  artifactRegistry: "germanedge-docker.artifactory" # artifactory path
+  imageName: "kafka"  
   artifactoryURL: "germanedge-docker.artifactory.new-solutions.com"
 
 trigger:
