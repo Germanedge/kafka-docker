@@ -1,5 +1,5 @@
 #!/bin/bash -e
-
+#eol fix
 MAJOR_VERSION=$(echo "$KAFKA_VERSION" | cut -d. -f1)
 export MAJOR_VERSION
 

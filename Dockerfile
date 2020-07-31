@@ -86,5 +86,5 @@ RUN chmod +x /opt/kafka/bin/entrypointwrapper.sh
 
 VOLUME ["/kafka"]
 
-# Use "exec" form so that it runs as PID 1 (useful for graceful shutdown)
+# Use "exec" form so that it runs as PID 1 (very useful for graceful shutdown)
 CMD ["start-kafka.sh"]
