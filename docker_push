@@ -1,5 +1,5 @@
 #!/bin/bash -e
-
+# eol fix
 BASE_IMAGE="wurstmeister/kafka"
 IMAGE_VERSION="$1"
 

@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-# Allow specific kafka versions to perform any unique bootstrap operations
+# Allow specific kafka versions to perform unique bootstrap operations
 OVERRIDE_FILE="/opt/overrides/${KAFKA_VERSION}.sh"
 if [[ -x "$OVERRIDE_FILE" ]]; then
     echo "Executing override file $OVERRIDE_FILE"
