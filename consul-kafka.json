@@ -6,7 +6,8 @@
         "tags": [
             "primary",
             "application",
-            "prometheus"
+            "prometheus",
+            "config"
         ],
         "meta": {
             "scrape_path": "/metrics",
