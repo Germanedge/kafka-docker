@@ -23,7 +23,7 @@
                 "depends_on" : [],
                 "deploy": {
                     "mode" : {"name":"mode","value":"replicated"},
-                    "replicas": {"value":2},
+                    "replicas": {"value":1},
                     "resources": {
                         "limits" : {"name":"memory","value":"2048M"}
                     },
