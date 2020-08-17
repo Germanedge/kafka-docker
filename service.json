@@ -25,7 +25,7 @@
                     "mode" : {"name":"mode","value":"replicated"},
                     "replicas": {"value":1},
                     "resources": {
-                        "limits" : {"name":"memory","value":"2048M"}
+                        "limits" : [{"name":"memory","value":"2048M"}]
                     },
                     "labels": [],
                     "placement": {
@@ -52,7 +52,7 @@
                     "mode" : {"name":"mode","value":"replicated"},
                     "replicas": {"value":1},
                     "resources": {
-                        "limits" : {"name":"memory","value":"2048M"}
+                        "limits" : [{"name":"memory","value":"2048M"}]
                     },
                     "labels": [],
                     "placement": {
