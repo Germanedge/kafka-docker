@@ -14,7 +14,7 @@
    ],
    "repository":{
       "type":"docker",
-      "url":"germanedge-docker.artifactory.new-solutions.com/edge-one/kafka"
+      "url":"germanedge-docker.artifactory.new-solutions.com/edge-one/"
    },
    "entrypoint":"entrypoint.sh",
    "dockerfile":"Dockerfile",
@@ -24,55 +24,17 @@
          "configuration":{
             "ports":[
                {
-                  "containerport":9092,
-                  "nodeport":9092
+                  "containerport":9092
                }
             ],
-            "volumes":[
-               {
-                  "name":"testVolume",
-                  "value":"test2Volume"
-               }
-            ],
-            "environments":[
-               {
-                  "name":"HOSTNAME_COMMAND",
-                  "value":"hostname | awk -F'-' '{print $$2}'"
-               },
-               {
-                  "name":"BROKER_ID_COMMAND",
-                  "value":"hostname -i | sed -e 's/\\.//g'"
-               },
-               {
-                  "name":"KAFKA_ZOOKEEPER_CONNECT",
-                  "value":"zookeeper:2181"
-               },
-               {
-                  "name":"KAFKA_LISTENER_SECURITY_PROTOCOL_MAP",
-                  "value":"INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
-               },
-               {
-                  "name":"KAFKA_ADVERTISED_LISTENERS",
-                  "value":"INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094"
-               },
-               {
-                  "name":"KAFKA_LISTENERS",
-                  "value":"INSIDE://:9092,OUTSIDE://:9094"
-               },
-               {
-                  "name":"KAFKA_INTER_BROKER_LISTENER_NAME",
-                  "value":"INSIDE"
-               },
-               {
-                  "name":"KAFKA_RESERVED_BROKER_MAX_ID",
-                  "value":1000000000
-               }
-            ],
+            "volumes":[],
+            "environments":[],
             "command":[
 
             ],
             "depends_on":[
-               "consul"
+               "consul",
+               "zookeeper"
             ],
             "deploy":{
                "mode":{
@@ -83,14 +45,10 @@
                },
                "resources":{
                   "limits":{
-                     "memory":"2048M",
-                     "test":"value"
+                     "memory":"2048M"
                   }
                },
-               "labels":[
-                  "labe1",
-                  "label2"
-               ],
+               "labels":[],
                "placement":{
                   "constraints":[
                      "node.platform.os == linux"
@@ -103,62 +61,24 @@
             }
          },
          "dependencies":{
-            "consul":">=1.7.1 <2.0.0"
+            "consul":">=1.7.1 <2.0.0",
+            "zookeeper":">=1.7.1 <2.0.0"
          }
       },
       "development":{
          "configuration":{
             "ports":[
                {
-                  "containerport":9092,
-                  "nodeport":9092
+                  "containerport":9092
                }
             ],
-            "volumes":[
-               {
-                  "name":"testVolume",
-                  "value":"test2Volume"
-               }
-            ],
-            "environments":[
-               {
-                  "name":"HOSTNAME_COMMAND",
-                  "value":"hostname | awk -F'-' '{print $$2}'"
-               },
-               {
-                  "name":"BROKER_ID_COMMAND",
-                  "value":"hostname -i | sed -e 's/\\.//g'"
-               },
-               {
-                  "name":"KAFKA_ZOOKEEPER_CONNECT",
-                  "value":"zookeeper:2181"
-               },
-               {
-                  "name":"KAFKA_LISTENER_SECURITY_PROTOCOL_MAP",
-                  "value":"INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
-               },
-               {
-                  "name":"KAFKA_ADVERTISED_LISTENERS",
-                  "value":"INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094"
-               },
-               {
-                  "name":"KAFKA_LISTENERS",
-                  "value":"INSIDE://:9092,OUTSIDE://:9094"
-               },
-               {
-                  "name":"KAFKA_INTER_BROKER_LISTENER_NAME",
-                  "value":"INSIDE"
-               },
-               {
-                  "name":"KAFKA_RESERVED_BROKER_MAX_ID",
-                  "value":1000000000
-               }
-            ],
+            "volumes":[],
+            "environments":[],
             "command":[
 
             ],
             "depends_on":[
-               "consul"
+               "zookeeper"
             ],
             "deploy":{
                "mode":{
@@ -169,14 +89,10 @@
                },
                "resources":{
                   "limits":{
-                     "memory":"2048M",
-                     "test":"value"
+                     "memory":"2048M"
                   }
                },
-               "labels":[
-                  "labe1",
-                  "label2"
-               ],
+               "labels":[],
                "placement":{
                   "constraints":[
                      "node.platform.os == linux"
@@ -189,7 +105,7 @@
             }
          },
          "dependencies":{
-            "consul":">=1.7.1 <2.0.0"
+            "zookeeper":"develop"
          }
       }
    }
