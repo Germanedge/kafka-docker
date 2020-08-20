@@ -1,71 +1,196 @@
 {
-    "name" : "kafka",
-    "jsonversion" : "1",
-    "description" : "kafka",
-    "homepage" : "https://github.com/germanedge/kafka",
-    "keywords" : ["kafka", "message bus"],
-    "author" : "Christoph Heuwieser <Christoph.Heuwieser@crossvault.de>",
-    "contributors" : ["Karol Rebis <karol.rebis@silevis.com>", "Niels Oldenburg <niels.oldenburg@germanedge.com>"],
-    "repository" : {
-      "type": "docker",
-      "url": "germanedge-docker.artifactory.new-solutions.com/edge-one/"
-    },
-    "entrypoint" : "entrypoint.sh",
-    "dockerfile" : "Dockerfile",
-    "version" : "",
-    "profiles" : {
-        "production" : {
-            "configuration" : {
-                "ports" : ["9092:9092"],
-                "volumes" : [],
-                "environments" : [],
-                "command" : [],
-                "depends_on" : [],
-                "deploy": {
-                    "mode" : {"name":"mode","value":"replicated"},
-                    "replicas": {"value":1},
-                    "resources": {
-                        "limits" : [{"name":"memory","value":"2048M"}]
-                    },
-                    "labels": [],
-                    "placement": {
-                        "constraints" : ["node.platform.os == linux"]
-                    },
-                    "restart_policy": {
-                        "condition" : "on-failure",
-                        "delay" : "30s"
-                    }
-                }
-            },
-            "dependencies" : {
-                "zookeeper": ">=1.0.1 <2.0.0"
+   "name":"kafka",
+   "jsonversion":"2",
+   "description":"kafka",
+   "homepage":"https://github.com/germanedge/kafka",
+   "keywords":[
+      "kafka",
+      "message bus"
+   ],
+   "author":"Christoph Heuwieser <Christoph.Heuwieser@crossvault.de>",
+   "contributors":[
+      "Karol Rebis <karol.rebis@silevis.com>",
+      "Niels Oldenburg <niels.oldenburg@germanedge.com>"
+   ],
+   "repository":{
+      "type":"docker",
+      "url":"germanedge-docker.artifactory.new-solutions.com/edge-one/kafka"
+   },
+   "entrypoint":"entrypoint.sh",
+   "dockerfile":"Dockerfile",
+   "version":"",
+   "profiles":{
+      "production":{
+         "configuration":{
+            "ports":[
+               {
+                  "containerport":9092,
+                  "nodeport":9092
+               }
+            ],
+            "volumes":[
+               {
+                  "name":"testVolume",
+                  "value":"test2Volume"
+               }
+            ],
+            "environments":[
+               {
+                  "name":"HOSTNAME_COMMAND",
+                  "value":"hostname | awk -F'-' '{print $$2}'"
+               },
+               {
+                  "name":"BROKER_ID_COMMAND",
+                  "value":"hostname -i | sed -e 's/\\.//g'"
+               },
+               {
+                  "name":"KAFKA_ZOOKEEPER_CONNECT",
+                  "value":"zookeeper:2181"
+               },
+               {
+                  "name":"KAFKA_LISTENER_SECURITY_PROTOCOL_MAP",
+                  "value":"INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
+               },
+               {
+                  "name":"KAFKA_ADVERTISED_LISTENERS",
+                  "value":"INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094"
+               },
+               {
+                  "name":"KAFKA_LISTENERS",
+                  "value":"INSIDE://:9092,OUTSIDE://:9094"
+               },
+               {
+                  "name":"KAFKA_INTER_BROKER_LISTENER_NAME",
+                  "value":"INSIDE"
+               },
+               {
+                  "name":"KAFKA_RESERVED_BROKER_MAX_ID",
+                  "value":1000000000
+               }
+            ],
+            "command":[
+
+            ],
+            "depends_on":[
+               "consul"
+            ],
+            "deploy":{
+               "mode":{
+                  "value":"replicated"
+               },
+               "replicas":{
+                  "value":2
+               },
+               "resources":{
+                  "limits":{
+                     "memory":"2048M",
+                     "test":"value"
+                  }
+               },
+               "labels":[
+                  "labe1",
+                  "label2"
+               ],
+               "placement":{
+                  "constraints":[
+                     "node.platform.os == linux"
+                  ]
+               },
+               "restart_policy":{
+                  "condition":"on-failure",
+                  "delay":"30s"
+               }
             }
-        },
-        "development" : {
-            "configuration" : {
-                "ports" : ["9092:9092"],
-                "volumes" : [],
-                "environments" : [],
-                "command" : [],
-                "depends_on" : [],
-                "deploy": {
-                    "mode" : {"name":"mode","value":"replicated"},
-                    "replicas": {"value":1},
-                    "resources": {
-                        "limits" : [{"name":"memory","value":"2048M"}]
-                    },
-                    "labels": [],
-                    "placement": {
-                        "constraints" : ["node.platform.os == linux"]
-                    },
-                    "restart_policy": {
-                        "condition" : "on-failure"
-                    }
-                }
-            },
-            "dependencies" :{
-                "zookeeper" : "develop"
+         },
+         "dependencies":{
+            "consul":">=1.7.1 <2.0.0"
+         }
+      },
+      "development":{
+         "configuration":{
+            "ports":[
+               {
+                  "containerport":9092,
+                  "nodeport":9092
+               }
+            ],
+            "volumes":[
+               {
+                  "name":"testVolume",
+                  "value":"test2Volume"
+               }
+            ],
+            "environments":[
+               {
+                  "name":"HOSTNAME_COMMAND",
+                  "value":"hostname | awk -F'-' '{print $$2}'"
+               },
+               {
+                  "name":"BROKER_ID_COMMAND",
+                  "value":"hostname -i | sed -e 's/\\.//g'"
+               },
+               {
+                  "name":"KAFKA_ZOOKEEPER_CONNECT",
+                  "value":"zookeeper:2181"
+               },
+               {
+                  "name":"KAFKA_LISTENER_SECURITY_PROTOCOL_MAP",
+                  "value":"INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
+               },
+               {
+                  "name":"KAFKA_ADVERTISED_LISTENERS",
+                  "value":"INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094"
+               },
+               {
+                  "name":"KAFKA_LISTENERS",
+                  "value":"INSIDE://:9092,OUTSIDE://:9094"
+               },
+               {
+                  "name":"KAFKA_INTER_BROKER_LISTENER_NAME",
+                  "value":"INSIDE"
+               },
+               {
+                  "name":"KAFKA_RESERVED_BROKER_MAX_ID",
+                  "value":1000000000
+               }
+            ],
+            "command":[
+
+            ],
+            "depends_on":[
+               "consul"
+            ],
+            "deploy":{
+               "mode":{
+                  "value":"replicated"
+               },
+               "replicas":{
+                  "value":2
+               },
+               "resources":{
+                  "limits":{
+                     "memory":"2048M",
+                     "test":"value"
+                  }
+               },
+               "labels":[
+                  "labe1",
+                  "label2"
+               ],
+               "placement":{
+                  "constraints":[
+                     "node.platform.os == linux"
+                  ]
+               },
+               "restart_policy":{
+                  "condition":"on-failure",
+                  "delay":"30s"
+               }
             }
-        }
+         },
+         "dependencies":{
+            "consul":">=1.7.1 <2.0.0"
+         }
       }
-    }
+   }
+}
