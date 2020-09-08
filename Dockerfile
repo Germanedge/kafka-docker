@@ -5,7 +5,7 @@ ARG scala_version=2.12
 ARG glibc_version=2.31-r0
 ARG vcs_ref=unspecified
 ARG build_date=unspecified
-ARG consul_version=1.7.1
+ARG consul_version=1.8.3
 ARG hashicorp_releases=https://releases.hashicorp.com
 ARG filebeat_version=7.5.0
 ARG consul_url=consul
@@ -28,14 +28,15 @@ ENV KAFKA_VERSION=$kafka_version \
     FILEBEAT_VERSION=$filebeat_version \
     CUSTOM_INIT_SCRIPT=/opt/kafka/bin/entrypointwrapper.sh \
     CONSUL_URL=$consul_url \
+    HOSTNAME_COMMAND="hostname | awk -F'-' '{print $$2}'" \
+    BROKER_ID_COMMAND="hostname -i | sed -e 's/\\.//g'" \
     KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT \
-    KAFKA_ADVERTISED_LISTENERS=INSIDE://kafka:9092,OUTSIDE://localhost:9094 \
+    KAFKA_ADVERTISED_LISTENERS=INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094 \
     KAFKA_LISTENERS=INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094 \
     KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE \
-    KAFKA_RESERVED_BROKER_MAX_ID=1000000000 \
-    HOSTNAME_COMMAND="hostname | awk -F'-' '{print $$2}'" \
-    BROKER_ID_COMMAND="hostname -i | sed -e 's/\\.//g'"
+    KAFKA_RESERVED_BROKER_MAX_ID=1000000000
+
 
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
