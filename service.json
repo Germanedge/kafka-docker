@@ -1,112 +1,108 @@
 {
-   "name":"kafka",
-   "jsonversion":"2",
-   "description":"kafka",
-   "homepage":"https://github.com/germanedge/kafka",
-   "keywords":[
-      "kafka",
-      "message bus"
-   ],
-   "author":"Christoph Heuwieser <Christoph.Heuwieser@crossvault.de>",
-   "contributors":[
-      "Karol Rebis <karol.rebis@silevis.com>",
-      "Niels Oldenburg <niels.oldenburg@germanedge.com>"
-   ],
-   "repository":{
-      "type":"docker",
-      "url":"germanedge-docker.artifactory.new-solutions.com/edge-one/"
-   },
-   "entrypoint":"entrypoint.sh",
-   "dockerfile":"Dockerfile",
-   "version":"",
-   "profiles":{
-      "production":{
-         "configuration":{
-            "ports":[
-               {
-                  "containerport":9092
-               }
-            ],
-            "volumes":[],
-            "environments":[],
-            "command":[
-
-            ],
-            "depends_on":[
-               "consul",
-               "zookeeper"
-            ],
-            "deploy":{
-               "mode":{
-                  "value":"replicated"
-               },
-               "replicas":{
-                  "value":2
-               },
-               "resources":{
-                  "limits":{
-                     "memory":"2048M"
-                  }
-               },
-               "labels":[],
-               "placement":{
-                  "constraints":[
-                     "node.platform.os == linux"
-                  ]
-               },
-               "restart_policy":{
-                  "condition":"on-failure",
-                  "delay":"30s"
-               }
+  "name": "kafka",
+  "jsonversion": "2",
+  "description": "kafka",
+  "homepage": "https://github.com/germanedge/kafka",
+  "keywords": [
+    "kafka",
+    "message bus"
+  ],
+  "author": "Christoph Heuwieser <Christoph.Heuwieser@crossvault.de>",
+  "contributors": [
+    "Karol Rebis <karol.rebis@silevis.com>",
+    "Niels Oldenburg <niels.oldenburg@germanedge.com>"
+  ],
+  "repository": {
+    "type": "docker",
+    "url": "germanedge-docker.artifactory.new-solutions.com/edge-one/"
+  },
+  "entrypoint": "entrypoint.sh",
+  "dockerfile": "Dockerfile",
+  "version": "1.83.0",
+  "profiles": {
+    "production": {
+      "configuration": {
+        "ports": [
+          {
+            "containerport": 9092
+          }
+        ],
+        "volumes": [],
+        "environments": [],
+        "command": [],
+        "depends_on": [
+          "consul",
+          "zookeeper"
+        ],
+        "deploy": {
+          "mode": {
+            "value": "replicated"
+          },
+          "replicas": {
+            "value": 2
+          },
+          "resources": {
+            "limits": {
+              "memory": "2048M"
             }
-         },
-         "dependencies":{
-            "consul":">=1.7.1 <2.0.0",
-            "zookeeper":">=1.7.1 <2.0.0"
-         }
+          },
+          "labels": [],
+          "placement": {
+            "constraints": [
+              "node.platform.os == linux"
+            ]
+          },
+          "restart_policy": {
+            "condition": "on-failure",
+            "delay": "30s"
+          }
+        }
       },
-      "development":{
-         "configuration":{
-            "ports":[
-               {
-                  "containerport":9092
-               }
-            ],
-            "volumes":[],
-            "environments":[],
-            "command":[
-
-            ],
-            "depends_on":[
-               "zookeeper"
-            ],
-            "deploy":{
-               "mode":{
-                  "value":"replicated"
-               },
-               "replicas":{
-                  "value":2
-               },
-               "resources":{
-                  "limits":{
-                     "memory":"2048M"
-                  }
-               },
-               "labels":[],
-               "placement":{
-                  "constraints":[
-                     "node.platform.os == linux"
-                  ]
-               },
-               "restart_policy":{
-                  "condition":"on-failure",
-                  "delay":"30s"
-               }
-            }
-         },
-         "dependencies":{
-            "zookeeper":"develop"
-         }
+      "dependencies": {
+        "consul": ">=1.7.1 <2.0.0",
+        "zookeeper": ">=1.7.1 <2.0.0"
       }
-   }
+    },
+    "development": {
+      "configuration": {
+        "ports": [
+          {
+            "containerport": 9092
+          }
+        ],
+        "volumes": [],
+        "environments": [],
+        "command": [],
+        "depends_on": [
+          "zookeeper"
+        ],
+        "deploy": {
+          "mode": {
+            "value": "replicated"
+          },
+          "replicas": {
+            "value": 2
+          },
+          "resources": {
+            "limits": {
+              "memory": "2048M"
+            }
+          },
+          "labels": [],
+          "placement": {
+            "constraints": [
+              "node.platform.os == linux"
+            ]
+          },
+          "restart_policy": {
+            "condition": "on-failure",
+            "delay": "30s"
+          }
+        }
+      },
+      "dependencies": {
+        "zookeeper": "develop"
+      }
+    }
+  }
 }
