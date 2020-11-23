@@ -39,7 +39,7 @@
             "value": "replicated"
           },
           "replicas": {
-            "value": 2
+            "value": 1
           },
           "resources": {
             "limits": {
@@ -111,7 +111,7 @@
             "value": "replicated"
           },
           "replicas": {
-            "value": 2
+            "value": 1
           },
           "resources": {
             "limits": {
