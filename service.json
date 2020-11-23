@@ -68,7 +68,7 @@
         "ports": [
           {
             "containerport": 9092,
-            "nodeport": 9092
+            "nodeport": 9091
           }
         ],
         "volumes": [],
@@ -83,11 +83,11 @@
           },
           {
             "name": "KAFKA_ADVERTISED_LISTENERS",
-            "value": "INSIDE://kafka:9092,OUTSIDE://localhost:9092"
+            "value": "INSIDE://kafka:9092,OUTSIDE://localhost:9091"
           },
           {
             "name": "KAFKA_LISTENERS",
-            "value": "INSIDE://kafka:9092,OUTSIDE://localhost:9092"
+            "value": "INSIDE://kafka:9092,OUTSIDE://localhost:9091"
           },
           {
             "name": "KAFKA_INTER_BROKER_LISTENER_NAME",
