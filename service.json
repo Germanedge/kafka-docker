@@ -87,7 +87,7 @@
           },
           {
             "name": "KAFKA_LISTENERS",
-            "value": "INSIDE://kafka:9092,OUTSIDE://localhost:9091"
+            "value": "INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9091"
           },
           {
             "name": "KAFKA_INTER_BROKER_LISTENER_NAME",
