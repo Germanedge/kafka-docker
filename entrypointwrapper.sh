@@ -11,4 +11,3 @@ consul agent -bind=$IP -retry-join=$CONSUL_URL -data-dir /opt/consul-data  -conf
 
 # back to the real entrypoint - shouldn't be needed for kafka since dockerfile supports custom init sript
 #/entrypoint.sh
-#

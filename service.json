@@ -1,0 +1,138 @@
+{
+  "name": "kafka",
+  "jsonversion": "2",
+  "description": "kafka",
+  "homepage": "https://github.com/germanedge/kafka",
+  "keywords": [
+    "kafka",
+    "message bus"
+  ],
+  "author": "Christoph Heuwieser <Christoph.Heuwieser@crossvault.de>",
+  "contributors": [
+    "Karol Rebis <karol.rebis@silevis.com>",
+    "Niels Oldenburg <niels.oldenburg@germanedge.com>"
+  ],
+  "repository": {
+    "type": "docker",
+    "url": "germanedge-docker.artifactory.new-solutions.com/edge-one/"
+  },
+  "entrypoint": "entrypoint.sh",
+  "dockerfile": "Dockerfile",
+  "version": "1.86.0",
+  "profiles": {
+    "production": {
+      "configuration": {
+        "ports": [
+          {
+            "containerport": 9092
+          }
+        ],
+        "volumes": [],
+        "environments": [],
+        "command": [],
+        "depends_on": [
+          "consul",
+          "zookeeper"
+        ],
+        "deploy": {
+          "mode": {
+            "value": "replicated"
+          },
+          "replicas": {
+            "value": 1
+          },
+          "resources": {
+            "limits": {
+              "memory": "2048M"
+            }
+          },
+          "labels": [],
+          "placement": {
+            "constraints": [
+              "node.platform.os == linux"
+            ]
+          },
+          "restart_policy": {
+            "condition": "on-failure",
+            "delay": "30s"
+          }
+        }
+      },
+      "dependencies": {
+        "consul": ">=1.7.1 <2.0.0",
+        "zookeeper": ">=1.7.1 <2.0.0"
+      }
+    },
+    "development": {
+      "configuration": {
+        "ports": [
+          {
+            "containerport": 9092,
+            "nodeport": 9091
+          }
+        ],
+        "volumes": [],
+        "environments": [
+          {
+            "name": "KAFKA_ZOOKEEPER_CONNECT",
+            "value": "zookeeper:2181"
+          },
+          {
+            "name": "KAFKA_LISTENER_SECURITY_PROTOCOL_MAP",
+            "value": "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
+          },
+          {
+            "name": "KAFKA_ADVERTISED_LISTENERS",
+            "value": "INSIDE://kafka:9092,OUTSIDE://localhost:9091"
+          },
+          {
+            "name": "KAFKA_LISTENERS",
+            "value": "INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9091"
+          },
+          {
+            "name": "KAFKA_INTER_BROKER_LISTENER_NAME",
+            "value": "INSIDE"
+          },
+          {
+            "name": "KAFKA_BROKER_ID",
+            "value": "1"
+          },
+          {
+            "name": "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR",
+            "value": "1"
+          }
+        ],
+        "command": [],
+        "depends_on": [
+          "zookeeper"
+        ],
+        "deploy": {
+          "mode": {
+            "value": "replicated"
+          },
+          "replicas": {
+            "value": 1
+          },
+          "resources": {
+            "limits": {
+              "memory": "2048M"
+            }
+          },
+          "labels": [],
+          "placement": {
+            "constraints": [
+              "node.platform.os == linux"
+            ]
+          },
+          "restart_policy": {
+            "condition": "on-failure",
+            "delay": "30s"
+          }
+        }
+      },
+      "dependencies": {
+        "zookeeper": "develop"
+      }
+    }
+  }
+}

@@ -34,7 +34,7 @@ if [[ "$MAJOR_VERSION" == "0" && "$MINOR_VERSION" -gt "9" ]] || [[ "$MAJOR_VERSI
 fi
 
 # Expected format:
-#   name:partitions:replicas:cleanup.policy
+#    name:partitions:replicas:cleanup.policy
 IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOPICS; do
     echo "creating topics: $topicToCreate"
     IFS=':' read -r -a topicConfig <<< "$topicToCreate"
