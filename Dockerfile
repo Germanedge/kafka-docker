@@ -1,11 +1,10 @@
-FROM germanedge-docker.artifactory.new-solutions.com/edge-one/ge-ubuntu-generic:0.14.0
-
+FROM germanedge-docker.artifactory.new-solutions.com/edge-one/ge-ubuntu-generic:grz
 ARG kafka_version=2.7.0
 ARG scala_version=2.13
 
 ENV KAFKA_VERSION=$kafka_version \
     SCALA_VERSION=$scala_version \
-    KAFKA_HOME=/app \
+    KAFKA_HOME=/app/kafka \
     # CUSTOM_INIT_SCRIPT=/opt/kafka/bin/entrypointwrapper.sh \
     HOSTNAME_COMMAND="hostname | awk -F'-' '{print $$2}'" \
     BROKER_ID_COMMAND="hostname -i | sed -e 's/\\.//g'" \
@@ -15,16 +14,19 @@ ENV KAFKA_VERSION=$kafka_version \
     KAFKA_LISTENERS=INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094 \
     KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE \
     KAFKA_RESERVED_BROKER_MAX_ID=1000000000 \
+    KAFKA_LOG_DIRS=/app/kafka-data \
     SERVICENAME=kafka \
     PORT=9092 \
     CONSUL_TAGS='"primary,application,prometheus,config"' \
     CONSUL_META_SCRAPE_PATH="\/metrics" \
-    CONSUL_META_SCRAPE_PORT=7071
+    CONSUL_META_SCRAPE_PORT=7071 \
+    FILEBEAT_MODULES=kafka \
+    FILEBEAT_ARGS='-M kafka.log.var.kafka_home=[/app/kafka]'
 
 COPY service.json /app/
-COPY start-kafka.sh /app/startup.sh
 
 USER root
+
 
 #Set variables and install java 11
 ENV JAVA_HOME=/usr/local/openjdk-11
@@ -35,13 +37,14 @@ RUN /bin/sh -c set -eux; 		arch="$(dpkg --print-architecture)"; 	case "$arch" in
 #Print java home and version
 RUN echo $JAVA_HOME
 RUN java --version
-
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
+
 
 COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.sh /tmp/
 
 RUN chmod a+x /tmp/*.sh \
- && mv /tmp/start-kafka.sh /tmp/broker-list.sh /tmp/create-topics.sh /tmp/versions.sh /usr/bin \
+ && mv /tmp/broker-list.sh /tmp/create-topics.sh /tmp/versions.sh /usr/bin \
+ && mv /tmp/start-kafka.sh /app/startup.sh \
  && sync && /tmp/download-kafka.sh \
  && tar xfz /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -C /opt \
  && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
@@ -59,7 +62,13 @@ COPY overrides /opt/overrides
 
 VOLUME ["/kafka"]
 
+
+RUN chown -R -H -L edgeone:root $KAFKA_HOME
+# RUN chown -R -H -L edgeone:root /app/kafka
+
 USER 1000
 
 # Use "exec" form so that it runs as PID 1 (very useful for graceful shutdown)
 # CMD ["start-kafka.sh"]
+
+# CMD ["tail", "-f", "/dev/null"]
