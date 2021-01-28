@@ -63,10 +63,21 @@ COPY overrides /opt/overrides
 VOLUME ["/kafka"]
 
 
+
+
+
+# COPY log4j.properties $KAFKA_HOME/config
+# COPY empty.sh /edgeone/consul/init_consul.sh 
+# COPY filebeat.yml /edgeone/filebeat
+
+
 RUN chown -R -H -L edgeone:root $KAFKA_HOME
-# RUN chown -R -H -L edgeone:root /app/kafka
+
+
+# RUN chmod go-w /edgeone/filebeat/filebeat.yml
 
 USER 1000
+
 
 # Use "exec" form so that it runs as PID 1 (very useful for graceful shutdown)
 # CMD ["start-kafka.sh"]

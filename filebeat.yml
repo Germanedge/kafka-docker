@@ -1,0 +1,33 @@
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /edgeone/consul/logs/*.log
+    json.keys_under_root: true
+    json.add_error_key: true
+    json.message_key: '@message'
+
+fields:
+  appname: ${SERVICENAME}
+  version: ${APP_VERSION}
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+# output.console:
+#   pretty: true
+
+processors:
+  - add_host_metadata: ~
+  - rename:
+      fields:
+        - from: "@message"
+          to: "message"
+        - from: "@level"
+          to: "level"
+      ignore_missing: true
+      fail_on_error: false
