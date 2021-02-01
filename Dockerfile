@@ -1,4 +1,4 @@
-FROM germanedge-docker.artifactory.new-solutions.com/edge-one/ge-ubuntu-generic:0.14.0
+FROM germanedge-docker.artifactory.new-solutions.com/edge-one/ge-ubuntu-generic:0.15.0
 ARG kafka_version=2.7.0
 ARG scala_version=2.13
 
