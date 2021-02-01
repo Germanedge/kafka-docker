@@ -1,33 +1,10 @@
-FROM openjdk:8u212-jre-alpine
-
+FROM germanedge-docker.artifactory.new-solutions.com/edge-one/ge-ubuntu-generic:0.15.0
 ARG kafka_version=2.7.0
 ARG scala_version=2.13
-ARG glibc_version=2.31-r0
-ARG vcs_ref=unspecified
-ARG build_date=unspecified
-ARG consul_version=1.8.3
-ARG hashicorp_releases=https://releases.hashicorp.com
-ARG filebeat_version=7.5.0
-ARG consul_url=consul
-
-LABEL org.label-schema.name="kafka" \
-      org.label-schema.description="Apache Kafka" \
-      org.label-schema.build-date="${build_date}" \
-      org.label-schema.vcs-url="https://github.com/wurstmeister/kafka-docker" \
-      org.label-schema.vcs-ref="${vcs_ref}" \
-      org.label-schema.version="${scala_version}_${kafka_version}" \
-      org.label-schema.schema-version="1.0" \
-      maintainer="wurstmeister"
 
 ENV KAFKA_VERSION=$kafka_version \
     SCALA_VERSION=$scala_version \
-    KAFKA_HOME=/opt/kafka \
-    GLIBC_VERSION=$glibc_version \
-    CONSUL_VERSION=$consul_version \
-    HASHICORP_RELEASES=$hashicorp_releases \
-    FILEBEAT_VERSION=$filebeat_version \
-    CUSTOM_INIT_SCRIPT=/opt/kafka/bin/entrypointwrapper.sh \
-    CONSUL_URL=$consul_url \
+    KAFKA_HOME=/app/kafka \
     HOSTNAME_COMMAND="hostname | awk -F'-' '{print $$2}'" \
     BROKER_ID_COMMAND="hostname -i | sed -e 's/\\.//g'" \
     KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
@@ -35,41 +12,43 @@ ENV KAFKA_VERSION=$kafka_version \
     KAFKA_ADVERTISED_LISTENERS=INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094 \
     KAFKA_LISTENERS=INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094 \
     KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE \
-    KAFKA_RESERVED_BROKER_MAX_ID=1000000000
+    KAFKA_RESERVED_BROKER_MAX_ID=1000000000 \
+    KAFKA_LOG_DIRS=/app/kafka-data \
+    SERVICENAME=kafka \
+    PORT=9092 \
+    CONSUL_TAGS='"primary","application","prometheus","config"' \
+    CONSUL_META_SCRAPE_PATH="\/metrics" \
+    CONSUL_META_SCRAPE_PORT=7071 \
+    FILEBEAT_MODULES=kafka \
+    FILEBEAT_ARGS='-M kafka.log.var.kafka_home=[/app/kafka]'
+
+COPY service.json /app/
+
+USER root
 
 
+#Set variables and install java 11
+ENV JAVA_HOME=/usr/local/openjdk-11
+ENV PATH=/usr/local/openjdk-11/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+RUN /bin/sh -c set -eux; 		arch="$(dpkg --print-architecture)"; 	case "$arch" in 		arm64 | aarch64) downloadUrl=https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.9%2B11/OpenJDK11U-jdk_aarch64_linux_11.0.9_11.tar.gz ;; 		amd64 | i386:x86-64) downloadUrl=https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.9%2B11/OpenJDK11U-jdk_x64_linux_11.0.9_11.tar.gz ;; 		*) echo >&2 "error: unsupported architecture: '$arch'"; exit 1 ;; 	esac; 		savedAptMark="$(apt-mark showmanual)"; 	apt-get update; 	apt-get install -y --no-install-recommends 		dirmngr 		gnupg 		wget 	; 	rm -rf /var/lib/apt/lists/*; 		wget -O openjdk.tgz.asc "$downloadUrl.sign"; 	wget -O openjdk.tgz "$downloadUrl" --progress=dot:giga; 		export GNUPGHOME="$(mktemp -d)"; 	gpg --batch --keyserver ha.pool.sks-keyservers.net --keyserver-options no-self-sigs-only --recv-keys CA5F11C6CE22644D42C6AC4492EF8D39DC13168F; 	gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys EAC843EBD3EFDB98CC772FADA5CD6035332FA671; 	gpg --batch --list-sigs --keyid-format 0xLONG CA5F11C6CE22644D42C6AC4492EF8D39DC13168F 		| tee /dev/stderr 		| grep '0xA5CD6035332FA671' 		| grep 'Andrew Haley'; 	gpg --batch --verify openjdk.tgz.asc openjdk.tgz; 	gpgconf --kill all; 	rm -rf "$GNUPGHOME"; 		mkdir -p "$JAVA_HOME"; 	tar --extract 		--file openjdk.tgz 		--directory "$JAVA_HOME" 		--strip-components 1 		--no-same-owner 	; 	rm openjdk.tgz*; 			apt-mark auto '.*' > /dev/null; 	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark > /dev/null; 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; 		{ 		echo '#!/usr/bin/env bash'; 		echo 'set -Eeuo pipefail'; 		echo 'if ! [ -d "$JAVA_HOME" ]; then echo >&2 "error: missing JAVA_HOME environment variable"; exit 1; fi'; 		echo 'cacertsFile=; for f in "$JAVA_HOME/lib/security/cacerts" "$JAVA_HOME/jre/lib/security/cacerts"; do if [ -e "$f" ]; then cacertsFile="$f"; break; fi; done'; 		echo 'if [ -z "$cacertsFile" ] || ! [ -f "$cacertsFile" ]; then echo >&2 "error: failed to find cacerts file in $JAVA_HOME"; exit 1; fi'; 		echo 'trust extract --overwrite --format=java-cacerts --filter=ca-anchors --purpose=server-auth "$cacertsFile"'; 	} > /etc/ca-certificates/update.d/docker-openjdk; 	chmod +x /etc/ca-certificates/update.d/docker-openjdk; 	/etc/ca-certificates/update.d/docker-openjdk; 		find "$JAVA_HOME/lib" -name '*.so' -exec dirname '{}' ';' | sort -u > /etc/ld.so.conf.d/docker-openjdk.conf; 	ldconfig; 		fileEncoding="$(echo 'System.out.println(System.getProperty("file.encoding"))' | jshell -s -)"; [ "$fileEncoding" = 'UTF-8' ]; rm -rf ~/.java; 	javac --version; 	java --version
+
+#Print java home and version
+RUN echo $JAVA_HOME
+RUN java --version
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
+
 
 COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.sh /tmp/
 
-RUN apk add --no-cache bash curl jq docker \
- && chmod a+x /tmp/*.sh \
- && mv /tmp/start-kafka.sh /tmp/broker-list.sh /tmp/create-topics.sh /tmp/versions.sh /usr/bin \
+RUN chmod a+x /tmp/*.sh \
+ && mv /tmp/broker-list.sh /tmp/create-topics.sh /tmp/versions.sh /usr/bin \
+ && mv /tmp/start-kafka.sh /app/startup.sh \
  && sync && /tmp/download-kafka.sh \
  && tar xfz /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -C /opt \
  && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME} \
- && rm /tmp/* \
- && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
- && apk add --no-cache --allow-untrusted glibc-${GLIBC_VERSION}.apk \
- && rm glibc-${GLIBC_VERSION}.apk
-
-RUN curl -L -o /tmp/consul.zip ${HASHICORP_RELEASES}/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip \
- && unzip -d /usr/bin /tmp/consul.zip && chmod +x /usr/bin/consul && rm /tmp/consul.zip \
- && mkdir -p /etc/consul.d/ \
- && mkdir -p /opt/consul-data/
- 
-ADD consul-kafka.json /etc/consul.d/
-
-RUN curl https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VERSION}-linux-x86_64.tar.gz -o /tmp/filebeat.tar.gz \
-  && tar xzf /tmp/filebeat.tar.gz \
-  && rm /tmp/filebeat.tar.gz \
-  && mv filebeat-${FILEBEAT_VERSION}-linux-x86_64 /usr/share/filebeat \
-  && cp /usr/share/filebeat/filebeat /usr/bin \
-  && mkdir -p /etc/filebeat \
-  && cp -a /usr/share/filebeat/module /etc/filebeat/
-  
-ADD filebeat.yml /etc/filebeat
+ && rm /tmp/download-kafka.sh 
 
 RUN mkdir -p /opt/prometheus/ \
   && curl https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.12.0/jmx_prometheus_javaagent-0.12.0.jar -o /opt/prometheus/jmx-exporter.jar
@@ -80,11 +59,8 @@ ENV KAFKA_OPTS='-javaagent:/opt/prometheus/jmx-exporter.jar=7071:/opt/prometheus
 
 COPY overrides /opt/overrides
 
-ADD entrypointwrapper.sh /opt/kafka/bin/
 
-RUN chmod +x /opt/kafka/bin/entrypointwrapper.sh
 
-VOLUME ["/kafka"]
+RUN chown -R -H -L edgeone:root $KAFKA_HOME
 
-# Use "exec" form so that it runs as PID 1 (very useful for graceful shutdown)
-CMD ["start-kafka.sh"]
+USER 1000
