@@ -1,6 +1,6 @@
 {
   "name": "kafka",
-  "jsonversion": "2",
+  "jsonversion": "3",
   "description": "kafka",
   "homepage": "https://github.com/germanedge/kafka",
   "keywords": [
@@ -24,7 +24,7 @@
       "configuration": {
         "ports": [
           {
-            "containerport": 9092
+            "containerPort": 9092
           }
         ],
         "volumes": [],
@@ -67,8 +67,8 @@
       "configuration": {
         "ports": [
           {
-            "containerport": 9092,
-            "nodeport": 9091
+            "containerPort": 9092,
+            "nodePort": 9091
           }
         ],
         "volumes": [],
