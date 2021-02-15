@@ -46,6 +46,10 @@
             "value": "INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9091"
           },
           {
+            "name": "KAFKA_PORT",
+            "value": "9092"
+          }
+          {
             "name": "KAFKA_INTER_BROKER_LISTENER_NAME",
             "value": "INSIDE"
           },
@@ -113,6 +117,10 @@
           {
             "name": "KAFKA_ADVERTISED_LISTENERS",
             "value": "INSIDE://kafka:9092,OUTSIDE://localhost:9091"
+          },
+          {         {
+            "name": "KAFKA_PORT",
+            "value": "9092"
           },
           {
             "name": "KAFKA_LISTENERS",
