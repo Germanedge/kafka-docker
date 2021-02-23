@@ -48,7 +48,7 @@
           {
             "name": "KAFKA_PORT",
             "value": "9092"
-          }
+          },
           {
             "name": "KAFKA_INTER_BROKER_LISTENER_NAME",
             "value": "INSIDE"
