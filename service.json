@@ -1,6 +1,6 @@
 {
   "name": "kafka",
-  "jsonversion": "2",
+  "jsonversion": "3",
   "description": "kafka",
   "homepage": "https://github.com/germanedge/kafka",
   "keywords": [
@@ -18,17 +18,50 @@
   },
   "entrypoint": "entrypoint.sh",
   "dockerfile": "Dockerfile",
-  "version": "1.86.0",
+  "version": "1.88.0",
   "profiles": {
     "production": {
       "configuration": {
         "ports": [
           {
-            "containerport": 9092
+            "containerPort": 9092
           }
         ],
         "volumes": [],
-        "environments": [],
+        "environments": [
+        {
+            "name": "KAFKA_ZOOKEEPER_CONNECT",
+            "value": "zookeeper:2181"
+          },
+          {
+            "name": "KAFKA_LISTENER_SECURITY_PROTOCOL_MAP",
+            "value": "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
+          },
+          {
+            "name": "KAFKA_ADVERTISED_LISTENERS",
+            "value": "INSIDE://kafka:9092,OUTSIDE://localhost:9091"
+          },
+          {
+            "name": "KAFKA_LISTENERS",
+            "value": "INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9091"
+          },
+          {
+            "name": "KAFKA_PORT",
+            "value": "9092"
+          },
+          {
+            "name": "KAFKA_INTER_BROKER_LISTENER_NAME",
+            "value": "INSIDE"
+          },
+          {
+            "name": "KAFKA_BROKER_ID",
+            "value": "1"
+          },
+          {
+            "name": "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR",
+            "value": "1"
+          }
+        ],
         "command": [],
         "depends_on": [
           "consul",
@@ -67,8 +100,8 @@
       "configuration": {
         "ports": [
           {
-            "containerport": 9092,
-            "nodeport": 9091
+            "containerPort": 9092,
+            "nodePort": 9091
           }
         ],
         "volumes": [],
@@ -84,6 +117,10 @@
           {
             "name": "KAFKA_ADVERTISED_LISTENERS",
             "value": "INSIDE://kafka:9092,OUTSIDE://localhost:9091"
+          },
+          {
+            "name": "KAFKA_PORT",
+            "value": "9092"
           },
           {
             "name": "KAFKA_LISTENERS",
