@@ -16,7 +16,7 @@ EdgeOne notes
 
 At bootup the entrypoint queries zookeeper and finds a free brokerid starting by 1.
 (todo: limit max number of brokers to avoid random high broker IDs or long boot loop)
-Persistent storage should be mapped to /app/kafka_data since kafka will store data under /app/kafka_data/BROKERID/ which allows for using one shared storage backend like NFS to be used in all deployments at once and have the cluster be auto-scaled.
+Persistent storage should be mapped to /app/kafka-data since kafka will store data under /app/kafka-data/BROKERID/ which allows for using one shared storage backend like NFS to be used in all deployments at once and have the cluster be auto-scaled.
 
 Managing persistent storage in a multi-instance cluster environment:
 The default configuration ships with just one instance of kafka in mind. However, the container is setup (as described above) to handle scaling and can be setup in two ways:
