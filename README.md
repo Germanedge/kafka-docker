@@ -11,27 +11,18 @@ Dockerfile for [Apache Kafka](http://kafka.apache.org/)
 
 The image is available directly from [Docker Hub](https://hub.docker.com/r/wurstmeister/kafka/)
 
-Tags and releases
+EdgeOne notes
 -----------------
 
-All versions of the image are built from the same set of scripts with only minor variations (i.e. certain features are not supported on older versions). The version format mirrors the Kafka format, `<scala version>-<kafka version>`. Initially, all images are built with the recommended version of scala documented on [http://kafka.apache.org/downloads](http://kafka.apache.org/downloads). Available tags are:
+At bootup the entrypoint queries zookeeper and finds a free brokerid starting by 1.
+(todo: limit max number of brokers to avoid random high broker IDs or long boot loop)
+Persistent storage should be mapped to /app/kafka_data since kafka will store data under /app/kafka_data/BROKERID/ which allows for using one shared storage backend like NFS to be used in all deployments at once and have the cluster be auto-scaled.
 
-- `2.13-2.7.0`
-- `2.13-2.6.0`
-- `2.12-2.5.0`
-- `2.12-2.4.1`
-- `2.12-2.3.1`
-- `2.12-2.2.2`
-- `2.12-2.1.1`
-- `2.12-2.0.1`
-- `2.11-1.1.1`
-- `2.11-1.0.2`
-- `2.11-0.11.0.3`
-- `2.11-0.10.2.2`
-- `2.11-0.9.0.1`
-- `2.10-0.8.2.2`
+Managing persistent storage in a multi-instance cluster environment:
+The default configuration ships with just one instance of kafka in mind. However, the container is setup (as described above) to handle scaling and can be setup in two ways:
+1. Copy the deployment manifest and add as many instances of kafka as desired with unique broker-ids and servicenames
+2. Use a shared blockdevice and filesystem for the storage device that supports Write-Many-Mode https://kubernetes.io/docs/concepts/storage/persistent-volumes/ leave the brokerid empty and set enviroment variable BROKER_ID_COMMAND to /app/getfreebrokerid.sh
 
-Everytime the image is updated, all tags will be pushed with the latest updates. This should allow for greater consistency across tags, as well as any security updates that have been made to the base image.
 
 ---
 

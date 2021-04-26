@@ -1,6 +1,7 @@
 FROM germanedge-docker.artifactory.new-solutions.com/edge-one/ge-ubuntu-generic:0.15.0
 ARG kafka_version=2.7.0
 ARG scala_version=2.13
+ARG zookeper_version=3.5.9
 
 ENV KAFKA_VERSION=$kafka_version \
     SCALA_VERSION=$scala_version \
@@ -20,7 +21,8 @@ ENV KAFKA_VERSION=$kafka_version \
     CONSUL_META_SCRAPE_PATH="\/metrics" \
     CONSUL_META_SCRAPE_PORT=7071 \
     FILEBEAT_MODULES=kafka \
-    FILEBEAT_ARGS='-M kafka.log.var.kafka_home=[/app/kafka]'
+    FILEBEAT_ARGS='-M kafka.log.var.kafka_home=[/app/kafka]' \
+    ZOOKEEPER_VERSION=$zookeper_version
 
 COPY service.json /app/
 
@@ -50,6 +52,11 @@ RUN chmod a+x /tmp/*.sh \
  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME} \
  && rm /tmp/download-kafka.sh 
 
+
+RUN wget -O /tmp/zookeeper.tar.gz https://downloads.apache.org/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz \
+  && tar -xzf /tmp/zookeeper.tar.gz -C /opt \
+  && mv /opt/apache-zookeeper-${ZOOKEEPER_VERSION}-bin /opt/zookeeper
+
 RUN mkdir -p /opt/prometheus/ \
   && curl https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.12.0/jmx_prometheus_javaagent-0.12.0.jar -o /opt/prometheus/jmx-exporter.jar
 
@@ -59,7 +66,8 @@ ENV KAFKA_OPTS='-javaagent:/opt/prometheus/jmx-exporter.jar=7071:/opt/prometheus
 
 COPY overrides /opt/overrides
 
-
+COPY getfreebrokerid.sh /app/
+RUN chmod +x /app/getfreebrokerid.sh
 
 RUN chown -R -H -L edgeone:root $KAFKA_HOME
 
