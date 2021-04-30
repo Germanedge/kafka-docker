@@ -5,6 +5,19 @@
 # to reaquire previously shutdown broker sessions
 
 
+# first check if there already is kafka-log-dir existing with correct meta-data
+
+if [ -d "$KAFKA_LOG_DIRS" ]; then
+  KAFKA_BROKER_ID=$(grep '^broker.id\=[0-9+]' $KAFKA_LOG_DIRS/meta.properties)
+  export KAFKA_BROKER_ID=${KAFKA_BROKER_ID//[!0-9 ]/}
+  if ! [[ $KAFKA_BROKER_ID =~ '^[0-9]+$' ]] ; then
+    echo $KAFKA_BROKER_ID
+    exit 0;
+  fi
+fi
+
+
+
 export BROKERIDS=$(/opt/zookeeper/bin/zkCli.sh -server ${KAFKA_ZOOKEEPER_CONNECT} <<< 'ls /brokers/ids' | tail -2 | head -n1 )
 export BROKERIDS=${BROKERIDS//[!0-9 ]/}
 

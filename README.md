@@ -14,14 +14,13 @@ The image is available directly from [Docker Hub](https://hub.docker.com/r/wurst
 EdgeOne notes
 -----------------
 
-At bootup the entrypoint queries zookeeper and finds a free brokerid starting by 1.
+At bootup the entrypoint queries zookeeper and finds a free brokerid starting by 1. The entrypoint will automatically detect the previously used broker ID stored on the persistent volume.
 (todo: limit max number of brokers to avoid random high broker IDs or long boot loop)
-Persistent storage should be mapped to /app/kafka-data since kafka will store data under /app/kafka-data/BROKERID/ which allows for using one shared storage backend like NFS to be used in all deployments at once and have the cluster be auto-scaled.
 
 Managing persistent storage in a multi-instance cluster environment:
-The default configuration ships with just one instance of kafka in mind. However, the container is setup (as described above) to handle scaling and can be setup in two ways:
+The default configuration ships with just one instance of kafka in mind. However, the container is setup (depending on the persistent storage used - writeonce or writemany) to handle scaling and can be setup in two ways:
 1. Copy the deployment manifest and add as many instances of kafka as desired with unique broker-ids and servicenames
-2. Use a shared blockdevice and filesystem for the storage device that supports Write-Many-Mode https://kubernetes.io/docs/concepts/storage/persistent-volumes/ leave the brokerid empty and set enviroment variable BROKER_ID_COMMAND to /app/getfreebrokerid.sh
+2. Use a shared blockdevice and filesystem for the storage device that supports Write-Many-Mode https://kubernetes.io/docs/concepts/storage/persistent-volumes/ leave the brokerid empty and set enviroment variable BROKER_ID_COMMAND to /app/getfreebrokerid.sh (this is currently untested and would require to change the logic how the logs are stored on the volume)
 
 
 ---
