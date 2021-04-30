@@ -1,4 +1,4 @@
-FROM germanedge-docker.artifactory.new-solutions.com/edge-one/ge-ubuntu-generic:0.15.0
+FROM germanedge-docker.artifactory.new-solutions.com/edge-one/ge-ubuntu-generic:0.16.0
 ARG kafka_version=2.7.0
 ARG scala_version=2.13
 ARG zookeper_version=3.5.9
@@ -58,7 +58,7 @@ RUN wget -O /tmp/zookeeper.tar.gz https://downloads.apache.org/zookeeper/zookeep
   && mv /opt/apache-zookeeper-${ZOOKEEPER_VERSION}-bin /opt/zookeeper
 
 RUN mkdir -p /opt/prometheus/ \
-  && curl https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.12.0/jmx_prometheus_javaagent-0.12.0.jar -o /opt/prometheus/jmx-exporter.jar
+  && curl https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar -o /opt/prometheus/jmx-exporter.jar
 
 ADD prometheus_kafka.yml /opt/prometheus/
 
