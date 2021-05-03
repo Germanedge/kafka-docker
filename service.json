@@ -18,7 +18,7 @@
   },
   "entrypoint": "entrypoint.sh",
   "dockerfile": "Dockerfile",
-  "version": "1.88.0",
+  "version": "1.89.0",
   "profiles": {
     "production": {
       "configuration": {
@@ -28,14 +28,14 @@
           }
         ],
         "volumes": [
-	  {
-             "name": "kafka_data",
-	     "value": "/app/kafka_data",
-             "size": "4Gi"
-	  }
-	],
+          {
+            "name": "kafka_data",
+            "value": "/app/kafka_data",
+            "size": "4Gi"
+          }
+        ],
         "environments": [
-        {
+          {
             "name": "KAFKA_ZOOKEEPER_CONNECT",
             "value": "zookeeper:2181"
           },
@@ -61,7 +61,7 @@
           },
           {
             "name": "BROKER_ID_COMMAND",
-	    "value": "/app/getfreebrokerid.sh"
+            "value": "/app/getfreebrokerid.sh"
           },
           {
             "name": "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR",
