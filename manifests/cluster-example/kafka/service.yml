@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+  namespace: chtest
+spec:
+  selector:
+    matchLabels:
+      app: kafka
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      volumes:
+      - name: chtest-kafka-pv
+        persistentVolumeClaim:
+          claimName: chtest-kafka-pv-claim
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - image: germanedge-docker.artifactory.new-solutions.com/edge-one/kafka:develop
+        volumeMounts:
+        - mountPath: /app/kafka-data
+          name: chtest-kafka-pv
+          subPath: appkafkadata
+        imagePullPolicy: Always
+        name: kafka
+        env:
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: zookeeper:2181
+        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+          value: INSIDE:PLAINTEXT
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: INSIDE://kafka:9092
+        - name: KAFKA_LISTENERS
+          value: INSIDE://0.0.0.0:9092
+        - name: KAFKA_PORT
+          value: '9092'
+        - name: KAFKA_INTER_BROKER_LISTENER_NAME
+          value: INSIDE
+        - name: BROKER_ID_COMMAND
+          value: '/app/getfreebrokerid.sh'
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: '1'
+        ports:
+        - containerPort: 9092
+        resources:
+          limits:
+            memory: "2048M"
+        args: []
+        command: []
+      imagePullSecrets:
+      - name: artifactory
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: chtest
+spec:
+  selector:
+    app: kafka
+  type: ClusterIP
+  ports:
+  - targetPort: 9092
+    port: 9092
+    name: port0
+---
