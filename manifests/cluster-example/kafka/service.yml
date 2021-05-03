@@ -21,7 +21,7 @@ spec:
       securityContext:
         fsGroup: 1000
       containers:
-      - image: germanedge-docker.artifactory.new-solutions.com/edge-one/kafka:chtest5
+      - image: germanedge-docker.artifactory.new-solutions.com/edge-one/kafka:develop
         volumeMounts:
         - mountPath: /app/kafka-data
           name: chtest-kafka-pv
