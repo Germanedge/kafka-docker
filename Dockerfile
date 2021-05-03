@@ -1,5 +1,5 @@
 FROM germanedge-docker.artifactory.new-solutions.com/edge-one/ge-ubuntu-generic:0.16.0
-ARG kafka_version=2.7.0
+ARG kafka_version=2.8.0
 ARG scala_version=2.13
 ARG zookeper_version=3.5.9
 
