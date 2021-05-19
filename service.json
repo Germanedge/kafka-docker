@@ -25,6 +25,9 @@
         "ports": [
           {
             "containerPort": 9092
+          },
+          {
+            "containerPort": 7071
           }
         ],
         "volumes": [
@@ -108,6 +111,9 @@
           {
             "containerPort": 9092,
             "nodePort": 9091
+          },
+          {
+            "containerPort": 7071
           }
         ],
         "volumes": [],
