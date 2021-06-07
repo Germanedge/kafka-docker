@@ -20,7 +20,7 @@ spec:
       containers:
       - image: germanedge-docker.artifactory.new-solutions.com/edge-one/kafka:master
         volumeMounts:
-        - mountPath: /app/kafka_data
+        - mountPath: /app/kafka-data
           name: kafka-pv
           subPath: appkafkadata
         imagePullPolicy: Always
