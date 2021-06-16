@@ -33,7 +33,7 @@
         "volumes": [
           {
             "name": "kafka_data",
-            "value": "/app/kafka_data",
+            "value": "/app/kafka-data",
             "size": "4Gi"
           }
         ],
