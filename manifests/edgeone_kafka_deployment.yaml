@@ -25,9 +25,9 @@ spec:
         imagePullPolicy: Always
         name: kafka
         volumeMounts:
-        - mountPath: /app/kafka_data
+        - mountPath: /app/kafka-data
           name: edgeone-kafka-pv
-          subPath: appkafka_data
+          subPath: appkafka-data
         env:
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: zookeeper:2181
